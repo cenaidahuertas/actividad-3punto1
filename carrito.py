@@ -31,7 +31,7 @@ class Carrito:
         """Calcula el total del carrito sumando los precios de los productos seleccionados."""
         self._total = sum(producto.precio for producto in self._productos_seleccionados)
 
-    # ── métodos de negocio ───────────────────────────────
+    # ── métodos ───────────────────────────────
     
     def agregar_producto(self, producto: "Producto", cantidad: int ) -> bool:
         """Agrega un producto al carrito, verificando que la cantidad sea positiva."""

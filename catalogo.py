@@ -25,7 +25,7 @@ def productos(self, valor: list[Producto]) -> None:
             raise ValueError("Todos los elementos de la lista deben ser instancias de Producto.")
     self._productos = valor
 
-# ── métodos de negocio ───────────────────────────────
+# ── métodos  ───────────────────────────────
 
 def buscar_producto(self, codigo: str) -> Producto | None:
     """Busca un producto en el catálogo por su código y lo devuelve; si no se encuentra, devuelve None."""
