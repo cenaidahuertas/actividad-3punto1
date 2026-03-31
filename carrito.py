@@ -1,6 +1,6 @@
 class Carrito:
-    def __init__(self):
-        self.productos = []
+    def __init__(self,productos):
+        self.productos = productos
         self.total = 0
 
     def agregar_producto(self, producto, cantidad):
@@ -19,3 +19,4 @@ class Carrito:
         for producto in self.productos:
             self.total = self.total + producto.precio
         return self.total
+
