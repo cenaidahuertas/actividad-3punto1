@@ -20,7 +20,6 @@ class Envio:
     def pedido(self) -> Pedido:
         """Obtiene el pedido asociado al envío."""
         return self._pedido
-    
     @pedido.setter
     def pedido(self, valor: Pedido) -> None:
         """Establece el pedido asociado al envío, asegurándose de que sea una instancia de Pedido."""
@@ -34,7 +33,6 @@ class Envio:
     def empresa_transportadora(self) -> EmpresaTransportadora:
         """Obtiene la empresa transportadora asociada al envío."""
         return self._empresa_transportadora
-    
     @empresa_transportadora.setter
     def empresa_transportadora(self, valor: EmpresaTransportadora) -> None:
         """Establece la empresa transportadora asociada al envío, asegurándose de que sea una instancia de EmpresaTransportadora."""
@@ -48,7 +46,6 @@ class Envio:
     def estado(self) -> EstadoEnvio:
         """Obtiene el estado del envío."""
         return self._estado
-
     @estado.setter
     def estado(self, valor: EstadoEnvio) -> None:
         """Establece el estado del envío, asegurándose de que sea una instancia de EstadoEnvio."""

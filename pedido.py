@@ -25,7 +25,6 @@ class Pedido:
     def id_pedido(self) -> str:
         """Obtiene el ID del pedido."""
         return self._id_pedido
-    
     @id_pedido.setter
     def id_pedido(self, valor: str) -> None:
         """Establece el ID del pedido, asegurándose de que no esté vacío."""
@@ -39,8 +38,7 @@ class Pedido:
     @property
     def cliente(self) -> Cliente:
         """Obtiene el cliente asociado al pedido."""
-        return self._cliente
-    
+        return self._cliente 
     @cliente.setter
     def cliente(self, valor: Cliente) -> None:
         """Establece el cliente asociado al pedido, asegurándose de que sea una instancia de Cliente."""
@@ -54,7 +52,6 @@ class Pedido:
     def total(self) -> float:
         """Obtiene el total del pedido."""
         return self._total
-    
     @total.setter
     def total(self, valor: float) -> None:
         """Establece el total del pedido, asegurándose de que sea un número no negativo."""
@@ -68,7 +65,6 @@ class Pedido:
     def estado(self) -> estadopedido:
         """Obtiene el estado del pedido."""
         return self._estado
-    
     @estado.setter
     def estado(self, valor: estadopedido) -> None:
         """Establece el estado del pedido, asegurándose de que sea un valor válido de estadopedido."""
@@ -82,7 +78,6 @@ class Pedido:
     def fecha(self) -> date:
         """Obtiene la fecha del pedido."""
         return self._fecha
-    
     @fecha.setter
     def fecha(self, valor: date) -> None:
         """Establece la fecha del pedido, asegurándose de que sea una instancia de date."""
