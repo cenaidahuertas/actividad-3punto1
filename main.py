@@ -5,6 +5,8 @@ from envio import Envio
 from pedido import Pedido
 from pago import Pago
 from producto import Producto
+from transportadora import Transportadora
+from estadopedido import EstadoPedido
 from queja import Queja
 
 
