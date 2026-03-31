@@ -2,7 +2,7 @@ from catalogo import Catalogo
 from carrito import Carrito
 from cliente import Cliente
 from envio import Envio
-from orden import Pedido
+from pedido import Pedido
 from pago import Pago
 from producto import Producto
 from queja import Queja
