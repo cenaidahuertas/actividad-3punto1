@@ -1,6 +1,6 @@
-from envio import Envio
+from __future__ import annotations
+from estadopedido import EstadoPedido as EstadoEnvio
 from pedido import Pedido
-from estadopedido import EstadoEnvio
 
 class Transportadora:
     def __init__(
@@ -72,15 +72,11 @@ class Transportadora:
 
     # ── métodos de la transportadora ───────────────────────────────
 
-    def calcular_envio(self, pedido: Pedido) -> Envio:
-        """Calcula el envío para un pedido dado, devolviendo una instancia de Envio con el costo y estado correspondientes."""
+    def calcular_envio(self, pedido: Pedido) -> float:  
+        """Calcula el costo total del envío sumando el costo de envío al total del pedido."""
         if not isinstance(pedido, Pedido):
             raise ValueError("El pedido debe ser una instancia de Pedido.")
-        
-        costo_total = pedido.total + self.costo_envio
-        envio = Envio(empresa=self.nombre, costo=costo_total)
-        envio.estado = self.estado_envio
-        return envio
+        return pedido.total + self.costo_envio
     
     def despachar_pedido(self, pedido: Pedido) -> str:
         """Despacha un pedido, actualizando el estado del envío y devolviendo un mensaje de confirmación."""
@@ -88,15 +84,18 @@ class Transportadora:
             raise ValueError("El pedido debe ser una instancia de Pedido.")
         
         self.estado_envio = EstadoEnvio.ENVIADO
-        return f"Pedido {pedido.id_pedido} despachado por {self.nombre}. Costo total del envío: ${pedido.total + self.costo_envio:.2f}"
-    
-    # ── representación ───────────────────────────────────
+        return f"Pedido {pedido.id_pedido} despachado por {self.nombre}. Tiempo estimado de entrega: {self.tiempo_entrega} días."
 
+    
+
+    # ── representación ───────────────────────────────────
+    
     def __repr__(self) -> str:
         return (
             f"Transportadora(nombre={self._nombre!r}, "
             f"costo_envio={self._costo_envio!r}, "
             f"tiempo_entrega={self._tiempo_entrega!r}, "
+            f"estado_envio={self._estado_envio!r})"
         )
     
     def __str__(self) -> str:
@@ -104,5 +103,6 @@ class Transportadora:
             f"Transportadora: {self._nombre}\n"
             f"Costo de Envío: ${self._costo_envio:.2f}\n"
             f"Tiempo de Entrega: {self._tiempo_entrega} días\n"
+            f"Estado del Envío: {self._estado_envio.value}"
         )
     

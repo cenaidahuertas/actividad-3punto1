@@ -1,12 +1,13 @@
-from estadopedido import EstadoEnvio
+
+from estadopedido import EstadoPedido as EstadoEnvio
 from pedido import Pedido
-from transportadora import EmpresaTransportadora
+from transportadora import Transportadora
 
 class Envio:
     def __init__(
         self, 
         pedido: Pedido, 
-        empresa_transportadora: EmpresaTransportadora,
+        empresa_transportadora: Transportadora,
         estado: EstadoEnvio = EstadoEnvio.PENDIENTE
     ) -> None:
     
@@ -30,15 +31,16 @@ class Envio:
     # ── empresa_transportadora ───────────────────────────────────
 
     @property
-    def empresa_transportadora(self) -> EmpresaTransportadora:
+    def empresa_transportadora(self) -> Transportadora:
         """Obtiene la empresa transportadora asociada al envío."""
         return self._empresa_transportadora
     @empresa_transportadora.setter
-    def empresa_transportadora(self, valor: EmpresaTransportadora) -> None:
-        """Establece la empresa transportadora asociada al envío, asegurándose de que sea una instancia de EmpresaTransportadora."""
-        if not isinstance(valor, EmpresaTransportadora):
-            raise ValueError("La empresa transportadora debe ser una instancia de EmpresaTransportadora.")
+    def empresa_transportadora(self, valor: Transportadora) -> None:
+        """Establece la empresa transportadora asociada al envío, asegurándose de que sea una instancia de Transportadora."""
+        if not isinstance(valor, Transportadora):
+            raise ValueError("La empresa transportadora debe ser una instancia de Transportadora.")
         self._empresa_transportadora = valor
+        
 
     # ── estado ───────────────────────────────────
 

@@ -7,3 +7,10 @@ class EstadoPedido(Enum):
     ENTREGADO  = "ENTREGADO"
     CANCELADO  = "CANCELADO"
     
+
+class EstadoEnvio(Enum):
+    PENDIENTE = "PENDIENTE"
+    EN_RUTA   = "EN_RUTA"
+    ENTREGADO = "ENTREGADO"
+    DEVUELTO  = "DEVUELTO"
+    

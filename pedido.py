@@ -1,6 +1,6 @@
 from datetime import date
 from cliente import Cliente
-from estadopedido import estadopedido
+from estadopedido import EstadoPedido
 
 
 class Pedido:
@@ -9,7 +9,7 @@ class Pedido:
             id_pedido: str, 
             cliente: Cliente,
             total: float,
-            estado: estadopedido = estadopedido.PENDIENTE,
+            estado: EstadoPedido = EstadoPedido.PENDIENTE,
             fecha: date = None
     ) -> None:
       
@@ -62,13 +62,13 @@ class Pedido:
     # ── estado ───────────────────────────────────
     
     @property
-    def estado(self) -> estadopedido:
+    def estado(self) -> EstadoPedido:
         """Obtiene el estado del pedido."""
         return self._estado
     @estado.setter
-    def estado(self, valor: estadopedido) -> None:
+    def estado(self, valor: EstadoPedido) -> None:
         """Establece el estado del pedido, asegurándose de que sea un valor válido de estadopedido."""
-        if not isinstance(valor, estadopedido):
+        if not isinstance(valor, EstadoPedido):
             raise ValueError("El estado del pedido debe ser una instancia de estadopedido.")
         self._estado = valor
     
@@ -87,16 +87,16 @@ class Pedido:
 
     # ── métodos ───────────────────────────────
 
-    def cambiar_estado(self, nuevo_estado: estadopedido) -> None:
+    def cambiar_estado(self, nuevo_estado: EstadoPedido) -> None:
         """Cambia el estado del pedido a un nuevo estado válido."""
-        if not isinstance(nuevo_estado, estadopedido):
+        if not isinstance(nuevo_estado, EstadoPedido):
             raise ValueError("El nuevo estado debe ser una instancia de estadopedido.")
         self._estado = nuevo_estado
 
     def cancelar (self) -> bool:
         """Cancela el pedido si no ha sido enviado; devuelve True si se canceló, False si no se pudo cancelar."""
-        if self._estado in [estadopedido.PENDIENTE, estadopedido.CONFIRMADO]:
-            self._estado = estadopedido.CANCELADO
+        if self._estado in [EstadoPedido.PENDIENTE, EstadoPedido.CONFIRMADO]:
+            self._estado = EstadoPedido.CANCELADO
             return True
         return False
 
