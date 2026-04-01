@@ -2,147 +2,149 @@ from catalogo import Catalogo
 from carrito import Carrito
 from cliente import Cliente
 from envio import Envio
-from orden import Pedido
-from pago import Pago
+from pedido import Pedido
+from pago import Pago, PagoTarjeta
 from producto import Producto
+from transportadora import Transportadora
+from estadopedido import EstadoPedido
 from queja import Queja
 
 
-def formatear_precio(valor):
+def formatear_precio(valor: float) -> str:
     return "$" + format(int(valor), ",").replace(",", ".")
 
 
-def crear_productos():
+def crear_catalogo() -> Catalogo:
     productos = [
-        Producto("P001", "Laptop", "Portatil para analisis de datos", 3500000, 5),
-        Producto("P002", "Mouse", "Mouse ergonomico inalambrico", 250000, 10),
-        Producto("P003", "Teclado", "Teclado mecanico", 346500, 8),
-        Producto("P004", "Monitor", "Monitor Full HD de 24 pulgadas", 900000, 4),
+        Producto("P001", "Laptop",  "Portatil para analisis de datos", 3500000, 5),
+        Producto("P002", "Mouse",   "Mouse ergonomico inalambrico",      250000, 10),
+        Producto("P003", "Teclado", "Teclado mecanico",                  346500, 8),
+        Producto("P004", "Monitor", "Monitor Full HD de 24 pulgadas",    900000, 4),
     ]
     return Catalogo(productos)
 
 
-def mostrar_productos(catalogo):
-    print("\nCATALOGO DE PRODUCTOS")
-    for producto in catalogo.productos:
-        print(
-            "Codigo:", producto.codigo,
-            "| Nombre:", producto.nombre,
-            "| Precio:", formatear_precio(producto.precio),
-            "| Stock:", producto.cantidad_disponible
-        )
-        print("Descripcion:", producto.descripcion)
-
-
-def pedir_cliente():
-    print("REGISTRO DEL CLIENTE")
-    nombre = input("Nombre: ")
-    correo = input("Correo: ")
-    direccion = input("Direccion: ")
+def registrar_cliente() -> Cliente:
+    print("\n=== Registro de Cliente ===")
+    nombre    = input("Nombre   : ").strip()
+    correo    = input("Correo   : ").strip()
+    direccion = input("Dirección: ").strip()
     return Cliente(nombre, correo, direccion)
 
 
-def llenar_carrito(catalogo):
-    carrito = Carrito()
+def llenar_carrito(cliente: Cliente, catalogo: Catalogo) -> Carrito:
+    carrito = cliente.crear_carrito()
 
     while True:
-        mostrar_productos(catalogo)
-        codigo = input("Ingrese codigo del producto o FIN: ").upper()
+        cliente.ver_catalogo(catalogo)
+        codigo = input("\nCódigo del producto (o FIN para terminar): ").upper().strip()
 
         if codigo == "FIN":
             break
 
         producto = catalogo.buscar_producto(codigo)
-
         if producto is None:
-            print("Producto no encontrado.")
-        else:
-            cantidad = int(input("Cantidad: "))
-            agregado = carrito.agregar_producto(producto, cantidad)
+            print("✗ Producto no encontrado.")
+            continue
 
-            if agregado:
-                print("Producto agregado.")
+        try:
+            cantidad = int(input("Cantidad: "))
+            if carrito.agregar_producto(producto, cantidad):
+                print("✓ Producto agregado.")
             else:
-                print("No se pudo agregar el producto.")
+                print("✗ No se pudo agregar el producto.")
+        except ValueError as e:
+            print(f"Error: {e}")
 
     return carrito
 
 
-def mostrar_carrito(carrito):
-    print("\nCARRITO")
-
-    if len(carrito.productos) == 0:
-        print("No hay productos.")
-        return
-
-    for producto in carrito.productos:
-        print(producto.nombre, "-", formatear_precio(producto.precio))
-
-    print("Total:", formatear_precio(carrito.calcular_total()))
-
-
-def pedir_pago(total):
-    print("\nPAGO")
-    numero = input("Numero de tarjeta: ")
-    fecha = input("Fecha de vencimiento: ")
-    cvv = input("CVV: ")
-
-    pago = Pago(numero, fecha, cvv)
-
-    if pago.validar_pago(total):
-        print("Pago exitoso.")
-        return pago
-
-    print("Pago no valido.")
-    return None
+def realizar_pago(total: float) -> Pago | None:
+    print("\n=== Información de Pago ===")
+    while True:
+        numero = input("Número de tarjeta (16 dígitos): ").strip()
+        fecha  = input("Fecha de vencimiento (MM/AA)  : ").strip()
+        cvv    = input("CVV (3 dígitos)               : ").strip()
+        try:
+            pago = PagoTarjeta(numero, fecha, cvv)
+            if pago.procesar_pago(total):
+                print("✓ Pago procesado exitosamente.")
+                return pago
+            print("✗ Pago no válido.")
+        except (ValueError, TypeError) as e:
+            print(f"Error: {e}. Intente nuevamente.")
 
 
-def pedir_queja():
-    respuesta = input("Desea registrar una queja? (si/no): ").lower()
-
+def registrar_queja(cliente: Cliente) -> None:
+    respuesta = input("\n¿Desea registrar una queja? (si/no): ").strip().lower()
     if respuesta == "si":
-        descripcion = input("Escriba la queja: ")
-        return Queja(descripcion)
+        descripcion = input("Escriba su queja: ").strip()
+        queja = Queja(
+            id="Q001",
+            cliente=cliente.nombre,
+            descripcion=descripcion
+        )
+        queja.registrar_queja()
+        print(cliente.presentar_queja(queja.descripcion))
 
-    return None
 
+def main() -> None:
 
-def main():
-    catalogo = crear_productos()
-    cliente = pedir_cliente()
-    carrito = llenar_carrito(catalogo)
+    # 1. Catálogo
+    catalogo = crear_catalogo()
 
-    if len(carrito.productos) == 0:
-        print("No se realizo el pedido.")
+    # 2. Cliente
+    cliente = registrar_cliente()
+
+    # 3. Carrito
+    carrito = llenar_carrito(cliente, catalogo)
+
+    if not carrito.productos_seleccionados:
+        print("\n✗ Carrito vacío. No se realizó el pedido.")
         return
 
-    mostrar_carrito(carrito)
-    pago = pedir_pago(carrito.total)
+    print(str(carrito))
 
+    # 4. Pago
+    pago = realizar_pago(carrito.total)
     if pago is None:
         return
 
-    pedido = Pedido("PED001", cliente)
-    pedido.productos = carrito.productos
-    pedido.total = carrito.total
-    pedido.estado = "CONFIRMADO"
+    # 5. Pedido
+    pedido = Pedido(
+    id_pedido="PED001",
+    cliente=cliente,
+    total=carrito.total,
+    estado=EstadoPedido.CONFIRMADO
+)
+    pedido.cambiar_estado(EstadoPedido.CONFIRMADO)
 
-    envio = Envio("Envios Colombia", 15000)
+    # 6. Transportadora y Envío
+    transportadora = Transportadora(
+        nombre="Envíos Colombia",
+        costo_envio=15000,
+        tiempo_entrega=3
+    )
+    envio = Envio(
+        pedido=pedido,
+        empresa_transportadora=transportadora,
+        estado=EstadoPedido.PENDIENTE
+    )
+    envio.despachar()
 
-    print("\nRESUMEN FINAL")
-    print("Cliente:", cliente.nombre)
-    print("Correo:", cliente.correo)
-    print("Direccion:", cliente.direccion)
-    print("Total:", formatear_precio(pedido.total))
-    print("Estado del pedido:", pedido.estado)
-    print("Empresa de envio:", envio.empresa)
-    print("Costo de envio:", formatear_precio(envio.costo))
-    print("Estado del envio:", envio.estado)
+    # 7. Resumen final
+    print("\n=== RESUMEN FINAL ===")
+    print(str(cliente))
+    print(f"\nTotal pedido   : {formatear_precio(pedido.total)}")
+    print(f"Estado pedido  : {pedido.estado.value}")
+    print(str(envio))
+    print(f"Costo de envío : {formatear_precio(transportadora.costo_envio)}")
+    print(f"Tiempo entrega : {transportadora.tiempo_entrega} días")
 
-    queja = pedir_queja()
-    if queja is not None:
-        print("Queja registrada:", queja.descripcion)
+    # 8. Queja
+    registrar_queja(cliente)
 
 
 if __name__ == "__main__":
     main()
+
