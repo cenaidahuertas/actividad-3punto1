@@ -80,5 +80,16 @@ class Pago:
             f"Fecha de vencimiento: {self._fecha_vencimiento}\n"
             f"CVV: {'*' * len(self._cvv)}"
         )
+        
+        
+class PagoTarjeta(Pago):
+    
+    def procesar_pago(self, total: float) -> bool:
+        """Procesa el pago verificando que el total sea positivo."""
+        if not isinstance(total, (int, float)):
+            raise TypeError("El total debe ser un número.")
+        if total <= 0:
+            raise ValueError("El total debe ser mayor a cero.")
+        return True
     
     

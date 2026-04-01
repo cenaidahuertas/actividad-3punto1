@@ -3,7 +3,7 @@ from carrito import Carrito
 from cliente import Cliente
 from envio import Envio
 from pedido import Pedido
-from pago import Pago
+from pago import Pago, PagoTarjeta
 from producto import Producto
 from transportadora import Transportadora
 from estadopedido import EstadoPedido
@@ -66,7 +66,7 @@ def realizar_pago(total: float) -> Pago | None:
         fecha  = input("Fecha de vencimiento (MM/AA)  : ").strip()
         cvv    = input("CVV (3 dígitos)               : ").strip()
         try:
-            pago = Pago(numero, fecha, cvv)
+            pago = PagoTarjeta(numero, fecha, cvv)
             if pago.procesar_pago(total):
                 print("✓ Pago procesado exitosamente.")
                 return pago
@@ -112,12 +112,11 @@ def main() -> None:
 
     # 5. Pedido
     pedido = Pedido(
-        id="PED001",
-        productos=carrito.productos_seleccionados,
-        total=carrito.total,
-        cliente=cliente,
-        estado=EstadoPedido.CONFIRMADO
-    )
+    id_pedido="PED001",
+    cliente=cliente,
+    total=carrito.total,
+    estado=EstadoPedido.CONFIRMADO
+)
     pedido.cambiar_estado(EstadoPedido.CONFIRMADO)
 
     # 6. Transportadora y Envío

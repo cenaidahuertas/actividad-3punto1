@@ -6,6 +6,7 @@ class EstadoPedido(Enum):
     ENVIADO    = "ENVIADO"
     ENTREGADO  = "ENTREGADO"
     CANCELADO  = "CANCELADO"
+    DESPACHADO = "DESPACHADO"
     
 
 class EstadoEnvio(Enum):
